@@ -16,17 +16,7 @@ var keyState = window.keyState = {};
 window.addEventListener('keydown', function (ev) {
   var name = keysWeCareAbout[ev.keyCode.toString()];
   if (name) {
-    switch(name) {
-      case 'enter':
-        getScreenshot(function (picture) {
-          window.socket.emit(name, picture);
-        });
-        break;
-
-      default:
-        window.socket.emit(name);
-        break;
-    }
+    window.socket.emit(name);
     keyState[name] = true;
   }
 });

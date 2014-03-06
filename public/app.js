@@ -13,14 +13,11 @@ var socket = io.connect();
 var dirtyPlayers = false;
 var data = {players: {}};
 
-
-window.socket = socket;
-
 var context = a.getContext('2d');
 context.fillStyle = '#333';
 
 socket.on('message', function (newData) {
-  dirtyPlayers = true;
+  dirtyPlayers = !!newData;
   newData && newData.forEach(function (datum) {
     setPath(datum.key, datum.value, data);
   });
@@ -38,42 +35,18 @@ function setPath (path, value, obj) {
 function render () {
   renderPlayers();
   // for canvases
-  //a.width = a.width;
   requestAnimationFrame(render);
 }
 
-var gifContainer = document.querySelector('.gifs');
-var gifElements  = {};
-
 function renderPlayers () {
   if (dirtyPlayers) {
+    a.width = a.width;
     dirtyPlayers = false;
     var players = Object.keys(data.players).forEach(function (id) {
       var player = data.players[id];
-
-      // if a player has been added since last render, we need to add a new img element
-      if (!gifElements[id]) {
-        gifElements[id] = makeImg();
-      }
-      if (data.players[id].picture && gifElements[id].src !== data.players[id].picture) {
-        gifElements[id].src = data.players[id].picture;
-      }
-
-      translateElement(gifElements[id], data.players[id].x, data.players[id].y);
+      context.fillRect(player.x, player.y, 10, 10);
     });
-    // remove old images ?
-
   }
-}
-
-function makeImg () {
-  var img = document.createElement('img');
-  gifContainer.appendChild(img)
-  return img;
-}
-
-function translateElement (element, x, y) {
-  element.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px)';
 }
 
 render();
