@@ -14,7 +14,8 @@ var dirtyPlayers = false;
 var data = {players: {}};
 
 var context = a.getContext('2d');
-context.fillStyle = '#333';
+context.fillStyle = '#eee';
+context.strokeStyle = "#333";
 
 socket.on('message', function (newData) {
   dirtyPlayers = !!newData;
@@ -44,9 +45,20 @@ function renderPlayers () {
     dirtyPlayers = false;
     var players = Object.keys(data.players).forEach(function (id) {
       var player = data.players[id];
-      context.fillRect(player.x, player.y, 10, 10);
+      renderPlayer(player);
     });
   }
 }
-
+function renderPlayer (player) {
+  context.save();
+  context.translate(player.x, player.y);
+  context.rotate(player.rot || 0);
+  context.moveTo(5, 0);
+  context.lineTo(0, 10);
+  context.lineTo(5, 7);
+  context.lineTo(10, 10);
+  context.lineTo(5, 0);
+  context.stroke();
+  context.restore();
+}
 render();
